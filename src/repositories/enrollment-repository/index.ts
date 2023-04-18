@@ -2,7 +2,7 @@ import { Enrollment } from '@prisma/client';
 import { prisma } from '@/config';
 
 async function findWithAddressByUserId(userId: number) {
-  return prisma.enrollment.findFirst({
+  return await prisma.enrollment.findFirst({
     where: { userId },
     include: {
       Address: true,
@@ -25,7 +25,11 @@ async function upsert(
 }
 
 async function findByUserId(userId: number) {
-  return prisma.enrollment.findFirst({ where: { userId } });
+  return await prisma.enrollment.findFirst({ where: { userId } });
+}
+
+async function findById(id: number) {
+  return await prisma.enrollment.findFirst({ where: { id } });
 }
 
 export type CreateEnrollmentParams = Omit<Enrollment, 'id' | 'createdAt' | 'updatedAt'>;
@@ -35,6 +39,7 @@ const enrollmentRepository = {
   findWithAddressByUserId,
   upsert,
   findByUserId,
+  findById,
 };
 
 export default enrollmentRepository;

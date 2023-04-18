@@ -29,7 +29,7 @@ export async function getPayments(req: AuthenticatedRequest, res: Response) {
 
   try {
     if (!ticketId) {
-      throw httpStatus.NOT_FOUND;
+      return res.sendStatus(httpStatus.BAD_REQUEST);
     }
 
     const payment = await paymentsService.getPayments(Number(ticketId), userId);

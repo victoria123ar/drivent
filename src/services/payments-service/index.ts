@@ -8,7 +8,7 @@ async function postCreatePayments(userId: number, paymentData: PaymentType) {
   const ticket = await ticketsRepository.findTicketById(paymentData.ticketId);
 
   if (!ticket) {
-    throw notFoundError();
+    throw unauthorizedError();
   }
 
   const enrollment = await enrollmentRepository.findByUserId(userId);
@@ -29,29 +29,20 @@ async function postCreatePayments(userId: number, paymentData: PaymentType) {
 }
 
 async function getPayments(userId: number, ticketId: number) {
-  const user = await enrollmentRepository.findByUserId(userId);
-
-  if (!user) {
-    throw notFoundError();
-  }
-
   const ticket = await ticketsRepository.findTicketById(ticketId);
 
   if (!ticket) {
     throw unauthorizedError();
   }
 
-  const enrollment = await enrollmentRepository.findByUserId(ticketId);
+  const enrollment = await enrollmentRepository.findById(ticket.enrollmentId);
 
   if (userId !== enrollment.userId) {
     throw unauthorizedError();
   }
 
-  const payment = await paymentsRepository.findPayment(ticketId);
-
-  if (!payment) {
-    throw notFoundError();
-  }
+  const payment = await paymentsRepository.findPayment();
+  console.log(`retorno pagamentos: ${payment}`);
 
   return payment;
 }
